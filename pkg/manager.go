@@ -48,68 +48,68 @@ func (m *manager) processObsEvent(event interface{}) {
 		m.signals <- &osig.CurrentPreviewSceneChanged{
 			SceneName: e.SceneName,
 		}
-	case obsevents.CurrentProgramSceneChanged:
+	case *obsevents.CurrentProgramSceneChanged:
 		m.signals <- &osig.CurrentProgramSceneChanged{
 			SceneName: e.SceneName,
 		}
-	case obsevents.InputMuteStateChanged:
+	case *obsevents.InputMuteStateChanged:
 		m.signals <- &osig.InputMuteStateChanged{
 			InputName:  e.InputName,
 			InputMuted: e.InputMuted,
 		}
-	case obsevents.InputVolumeChanged:
+	case *obsevents.InputVolumeChanged:
 		m.signals <- &osig.InputVolumeChanged{
 			InputName:      e.InputName,
 			InputVolumeMul: e.InputVolumeMul,
 			InputVolumeDb:  e.InputVolumeDb,
 		}
-	case obsevents.RecordStateChanged:
+	case *obsevents.RecordStateChanged:
 		m.signals <- &osig.RecordStateChanged{
 			OutputActive: e.OutputActive,
 			OutputState:  e.OutputState,
 			OutputPath:   e.OutputPath,
 		}
-	case obsevents.ReplayBufferStateChanged:
+	case *obsevents.ReplayBufferStateChanged:
 		m.signals <- &osig.ReplayBufferStateChanged{
 			OutputActive: e.OutputActive,
 			OutputState:  e.OutputState,
 		}
-	case obsevents.ReplayBufferSaved:
+	case *obsevents.ReplayBufferSaved:
 		m.signals <- &osig.ReplayBufferSaved{
 			SavedReplayPath: e.SavedReplayPath,
 		}
-	case obsevents.SceneItemEnableStateChanged:
+	case *obsevents.SceneItemEnableStateChanged:
 		m.signals <- &osig.SceneItemEnableStateChanged{
 			SceneName:        e.SceneName,
 			SceneItemId:      int(e.SceneItemId),
 			SceneItemEnabled: e.SceneItemEnabled,
 		}
-	case obsevents.ScreenshotSaved:
+	case *obsevents.ScreenshotSaved:
 		m.signals <- &osig.ScreenshotSaved{
 			SavedScreenshotPath: e.SavedScreenshotPath,
 		}
-	case obsevents.StreamStateChanged:
+	case *obsevents.StreamStateChanged:
 		m.signals <- &osig.StreamStateChanged{
 			OutputActive: e.OutputActive,
 			OutputState:  e.OutputState,
 		}
-	case obsevents.SceneTransitionStarted:
+	case *obsevents.SceneTransitionStarted:
 		m.signals <- &osig.SceneTransitionStarted{
 			TransitionName: e.TransitionName,
 		}
-	case obsevents.SceneTransitionEnded:
+	case *obsevents.SceneTransitionEnded:
 		m.signals <- &osig.SceneTransitionEnded{
 			TransitionName: e.TransitionName,
 		}
-	case obsevents.SceneTransitionVideoEnded:
+	case *obsevents.SceneTransitionVideoEnded:
 		m.signals <- &osig.SceneTransitionVideoEnded{
 			TransitionName: e.TransitionName,
 		}
-	case obsevents.StudioModeStateChanged:
+	case *obsevents.StudioModeStateChanged:
 		m.signals <- &osig.StudioModeStateChanged{
 			StudioModeEnabled: e.StudioModeEnabled,
 		}
-	case obsevents.VirtualcamStateChanged:
+	case *obsevents.VirtualcamStateChanged:
 		m.signals <- &osig.VirtualCamStateChanged{
 			OutputActive: e.OutputActive,
 			OutputState:  e.OutputState,
