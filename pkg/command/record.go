@@ -20,7 +20,7 @@ func ProvideRecordCommands(obsProvider ObsProvider, l *zap.Logger) []func(ex.Exe
 			cmd.Run(obsProvider, l.Named(cmd.Code()))
 		}),
 		hubman.WithCommand(ToggleRecord{}, func(command core.SerializedCommand, cp ex.CommandParser) {
-			cmd := PauseRecord{}
+			cmd := ToggleRecord{}
 			cp(&cmd)
 			cmd.Run(obsProvider, l.Named(cmd.Code()))
 		}),
