@@ -28,12 +28,18 @@ func ProvideSourceCommands(obsManager ObsProvider, l *zap.Logger) []func(ex.Exec
 			cp(&cmd)
 			cmd.Run(obsManager, l.Named(cmd.Code()))
 		}),
+		hubman.WithCommand(ToggleCurrentSceneItemEnabled{}, func(_ core.SerializedCommand, cp ex.CommandParser) {
+			cmd := ToggleCurrentSceneItemEnabled{}
+			cp(&cmd)
+			cmd.Run(obsManager, l.Named(cmd.Code()))
+		}),
 	}
 }
 
 var _ RunnableCommand = &SetInputMute{}
 var _ RunnableCommand = &ToggleInputMute{}
 var _ RunnableCommand = &ToggleSceneItemEnabled{}
+var _ RunnableCommand = &ToggleCurrentSceneItemEnabled{}
 
 type SetInputMute struct {
 	InputName string `hubman:"input_name"`
@@ -119,5 +125,48 @@ func (t ToggleSceneItemEnabled) Code() string {
 }
 
 func (t ToggleSceneItemEnabled) Description() string {
+	return "Toggles the scene item enabled state, searches for it using given scene. Ex true->false, false->true"
+}
+
+type ToggleCurrentSceneItemEnabled struct {
+	SceneItemName string `hubman:"scene_item_name"`
+}
+
+func (t ToggleCurrentSceneItemEnabled) Run(p ObsProvider, _ *zap.Logger) error {
+	obsClient, err := p.Provide()
+	if err != nil {
+		return err
+	}
+	curScene, err := obsClient.Scenes.GetCurrentProgramScene()
+	if err != nil {
+		return err
+	}
+	items, err := obsClient.SceneItems.GetSceneItemList(&sceneitems.GetSceneItemListParams{
+		SceneName: curScene.CurrentProgramSceneName,
+	})
+	if err != nil {
+		return err
+	}
+	for _, item := range items.SceneItems {
+		if item.SourceName == t.SceneItemName {
+			enabled := !item.SceneItemEnabled
+			_, err = obsClient.SceneItems.SetSceneItemEnabled(
+				&sceneitems.SetSceneItemEnabledParams{
+					SceneName:        curScene.CurrentProgramSceneName,
+					SceneItemId:      float64(item.SceneItemID),
+					SceneItemEnabled: &enabled,
+				},
+			)
+			return err
+		}
+	}
+	return errors.New("not found scene item")
+}
+
+func (t ToggleCurrentSceneItemEnabled) Code() string {
+	return "ToggleCurrentSceneItemEnabled"
+}
+
+func (t ToggleCurrentSceneItemEnabled) Description() string {
 	return "Toggles the scene item enabled state, searches for it using current scene. Ex true->false, false->true"
 }

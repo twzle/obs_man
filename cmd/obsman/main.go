@@ -48,6 +48,7 @@ func main() {
 	executorCommands = append(executorCommands, ocmd.ProvideSourceCommands(obsManager, app.Logger())...)
 	executorCommands = append(executorCommands, ocmd.ProvideStreamCommands(obsManager, app.Logger())...)
 	executorCommands = append(executorCommands, ocmd.ProvideUiCommands(obsManager, app.Logger())...)
+	executorCommands = append(executorCommands, ocmd.ProvideTransitionCommands(obsManager, app.Logger())...)
 
 	manipulatorSignals := append(make([]func(manipulator.Manipulator), 0), hubman.WithChannel(signalsCh))
 	manipulatorSignals = append(manipulatorSignals, osig.CurrentSceneSignals...)
