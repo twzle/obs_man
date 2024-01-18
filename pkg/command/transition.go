@@ -1,6 +1,8 @@
 package command
 
 import (
+	"time"
+
 	"git.miem.hse.ru/hubman/hubman-lib"
 	"git.miem.hse.ru/hubman/hubman-lib/core"
 	ex "git.miem.hse.ru/hubman/hubman-lib/executor"
@@ -121,6 +123,7 @@ func (s TriggerStudioModeTransitionWithName) Run(p ObsProvider, l *zap.Logger) e
 	if err != nil {
 		return err
 	}
+	<-time.After(300 * time.Millisecond)
 	_, err = obsClient.Transitions.SetCurrentSceneTransition(&transitions.SetCurrentSceneTransitionParams{
 		TransitionName: curTransition.TransitionName,
 	})
