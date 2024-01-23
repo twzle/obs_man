@@ -5,7 +5,7 @@ go 1.21
 toolchain go1.21.5
 
 require (
-	git.miem.hse.ru/hubman/hubman-lib v1.0.1
+	git.miem.hse.ru/hubman/hubman-lib v0.0.23
 	github.com/andreykaipov/goobs v0.12.1
 	go.uber.org/zap v1.26.0
 )
