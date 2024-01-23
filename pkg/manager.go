@@ -166,6 +166,7 @@ func NewManager(c ObsConf, logger *zap.Logger, signalsCh chan<- core.Signal) (*m
 		client:    client,
 		logger:    logger.Named("OBSManager"),
 		signals:   signalsCh,
+		conf:      c,
 		connected: true,
 	}
 
