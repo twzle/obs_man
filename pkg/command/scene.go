@@ -32,14 +32,18 @@ type SetCurrentProgramScene struct {
 	ProgramSceneName string `hubman:"program_scene_name"`
 }
 
-func (s SetCurrentProgramScene) Run(p ObsProvider, _ *zap.Logger) error {
+func (s SetCurrentProgramScene) Run(p ObsProvider, l *zap.Logger) error {
 	obsClient, err := p.Provide()
 	if err != nil {
 		return err
 	}
+	l.Error("Error executing command", zap.Error(err))
 	_, err = obsClient.Scenes.SetCurrentProgramScene(&scenes.SetCurrentProgramSceneParams{
 		SceneName: s.ProgramSceneName,
 	})
+	if err != nil {
+		l.Error("Error executing command", zap.Error(err))
+	}
 	return err
 }
 
@@ -55,14 +59,18 @@ type SetCurrentPreviewScene struct {
 	PreviewSceneName string `hubman:"preview_scene_name"`
 }
 
-func (s SetCurrentPreviewScene) Run(p ObsProvider, _ *zap.Logger) error {
+func (s SetCurrentPreviewScene) Run(p ObsProvider, l *zap.Logger) error {
 	obsClient, err := p.Provide()
 	if err != nil {
 		return err
 	}
+	l.Error("Error executing command", zap.Error(err))
 	_, err = obsClient.Scenes.SetCurrentPreviewScene(&scenes.SetCurrentPreviewSceneParams{
 		SceneName: s.PreviewSceneName,
 	})
+	if err != nil {
+		l.Error("Error executing command", zap.Error(err))
+	}
 	return err
 }
 
