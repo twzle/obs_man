@@ -47,7 +47,7 @@ type SetInputMute struct {
 }
 
 func (s SetInputMute) Run(p ObsProvider, _ *zap.Logger) error {
-	obsClient, err := p.Provide()
+	obsClient, _, err := p.Provide()
 	if err != nil {
 		return err
 	}
@@ -70,7 +70,7 @@ type ToggleInputMute struct {
 }
 
 func (t ToggleInputMute) Run(p ObsProvider, _ *zap.Logger) error {
-	obsClient, err := p.Provide()
+	obsClient, _, err := p.Provide()
 	if err != nil {
 		return err
 	}
@@ -94,7 +94,7 @@ type ToggleSceneItemEnabled struct {
 }
 
 func (t ToggleSceneItemEnabled) Run(p ObsProvider, _ *zap.Logger) error {
-	obsClient, err := p.Provide()
+	obsClient, _, err := p.Provide()
 	if err != nil {
 		return err
 	}
@@ -133,7 +133,7 @@ type ToggleCurrentSceneItemEnabled struct {
 }
 
 func (t ToggleCurrentSceneItemEnabled) Run(p ObsProvider, _ *zap.Logger) error {
-	obsClient, err := p.Provide()
+	obsClient, _, err := p.Provide()
 	if err != nil {
 		return err
 	}

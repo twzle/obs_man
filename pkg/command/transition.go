@@ -62,7 +62,7 @@ func (s SetCurrentSceneTransition) Description() string {
 }
 
 func (s SetCurrentSceneTransition) Run(p ObsProvider, _ *zap.Logger) error {
-	obsClient, err := p.Provide()
+	obsClient, _, err := p.Provide()
 	if err != nil {
 		return err
 	}
@@ -84,7 +84,7 @@ func (s TriggerStudioModeTransition) Description() string {
 }
 
 func (s TriggerStudioModeTransition) Run(p ObsProvider, _ *zap.Logger) error {
-	obsClient, err := p.Provide()
+	obsClient, _, err := p.Provide()
 	if err != nil {
 		return err
 	}
@@ -105,7 +105,7 @@ func (s TriggerStudioModeTransitionWithName) Description() string {
 }
 
 func (s TriggerStudioModeTransitionWithName) Run(p ObsProvider, l *zap.Logger) error {
-	obsClient, err := p.Provide()
+	obsClient, _, err := p.Provide()
 	if err != nil {
 		return err
 	}

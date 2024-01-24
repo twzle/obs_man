@@ -8,6 +8,8 @@ import (
 var CurrentSceneSignals []func(manipulator.Manipulator) = []func(manipulator.Manipulator){
 	hubman.WithSignal[CurrentProgramSceneChanged](),
 	hubman.WithSignal[CurrentPreviewSceneChanged](),
+	hubman.WithSignal[CurrentProgramSceneChangedById](),
+	hubman.WithSignal[CurrentPreviewSceneChangedById](),
 }
 
 type CurrentProgramSceneChanged struct {
@@ -19,7 +21,7 @@ func (c CurrentProgramSceneChanged) Code() string {
 }
 
 func (c CurrentProgramSceneChanged) Description() string {
-	return "Sent when current program scene changes to included scene"
+	return "Sent when current program scene changes to included scene by name"
 }
 
 type CurrentPreviewSceneChanged struct {
@@ -31,5 +33,31 @@ func (c CurrentPreviewSceneChanged) Code() string {
 }
 
 func (c CurrentPreviewSceneChanged) Description() string {
-	return "Sent when current preview scene changes to included scene"
+	return "Sent when current preview scene changes to included scene by name"
+}
+
+type CurrentProgramSceneChangedById struct {
+	SceneName string `hubman:"scene_name"`
+	SceneId   int    `hubman:"scene_id"`
+}
+
+func (c CurrentProgramSceneChangedById) Code() string {
+	return "CurrentProgramSceneChangedById"
+}
+
+func (c CurrentProgramSceneChangedById) Description() string {
+	return "Sent when current program scene changes to included scene by id"
+}
+
+type CurrentPreviewSceneChangedById struct {
+	SceneName string `hubman:"scene_name"`
+	SceneId   int    `hubman:"scene_id"`
+}
+
+func (c CurrentPreviewSceneChangedById) Code() string {
+	return "CurrentPreviewSceneChangedById"
+}
+
+func (c CurrentPreviewSceneChangedById) Description() string {
+	return "Sent when current preview scene changes to included scene by id"
 }

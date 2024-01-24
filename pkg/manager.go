@@ -122,11 +122,15 @@ func (m *manager) processObsEvent(event interface{}) {
 	}
 }
 
-func (m *manager) Provide() (*goobs.Client, error) {
+func (m *manager) GetSignals() chan<- core.Signal{
+	return m.signals
+}
+
+func (m *manager) Provide() (*goobs.Client, chan<- core.Signal, error) {
 	if m.client == nil || !m.connected {
-		return nil, errors.New("no opened obs connection")
+		return nil, nil, errors.New("no opened obs connection")
 	}
-	return m.client, nil
+	return m.client, m.signals, nil
 }
 
 func (m *manager) Close() error {
