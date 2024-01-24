@@ -39,8 +39,9 @@ func main() {
 
 	obsManager, err := obsman.NewManager(userConfig.ObsConf, app.Logger(), signalsCh)
 	if err != nil {
-		app.Logger().Fatal("Unable to create obs manager", zap.Error(err))
+		app.Logger().Warn("Unable to create obs manager", zap.Error(err))
 	}
+	go obsManager.HealthCheck(userConfig.ObsConf, app.WaitShutdown())
 	defer obsManager.Close()
 
 	executorCommands := append(make([]func(executor.Executor), 0), ocmd.ProvideRecordCommands(obsManager, app.Logger())...)
