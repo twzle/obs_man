@@ -7,6 +7,7 @@ import (
 type ObsConf struct {
 	HostPort string `yaml:"host_port" json:"host_port"`
 	Password string `yaml:"password" json:"password"`
+	HealthCheckInterval int `yaml:"health_check_interval" json:"health_check_interval"`
 }
 
 type Conf struct {
