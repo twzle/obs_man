@@ -23,7 +23,7 @@ type SetStudioModeEnabled struct {
 }
 
 func (s SetStudioModeEnabled) Run(p ObsProvider, _ *zap.Logger) error {
-	obsClient, err := p.Provide()
+	obsClient, _, err := p.Provide()
 	if err != nil {
 		return err
 	}

@@ -43,7 +43,7 @@ func (t ToggleVirtualCam) Description() string {
 }
 
 func (t ToggleVirtualCam) Run(p ObsProvider, _ *zap.Logger) error {
-	obsClient, err := p.Provide()
+	obsClient, _, err := p.Provide()
 	if err != nil {
 		return err
 	}
@@ -63,7 +63,7 @@ func (s StopVirtualCam) Description() string {
 }
 
 func (s StopVirtualCam) Run(p ObsProvider, _ *zap.Logger) error {
-	obsClient, err := p.Provide()
+	obsClient, _, err := p.Provide()
 	if err != nil {
 		return err
 	}
@@ -83,7 +83,7 @@ func (s StartVirtualCam) Description() string {
 }
 
 func (s StartVirtualCam) Run(p ObsProvider, _ *zap.Logger) error {
-	obsClient, err := p.Provide()
+	obsClient, _, err := p.Provide()
 	if err != nil {
 		return err
 	}
