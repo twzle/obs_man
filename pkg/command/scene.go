@@ -2,12 +2,12 @@ package command
 
 import (
 	"errors"
-	osig "obs-man/pkg/signal"
-
+	"git.miem.hse.ru/hubman/hubman-lib"
 	"git.miem.hse.ru/hubman/hubman-lib/core"
 	ex "git.miem.hse.ru/hubman/hubman-lib/executor"
 	"github.com/andreykaipov/goobs/api/requests/scenes"
 	"go.uber.org/zap"
+	osig "obs-man/pkg/signal"
 )
 
 func ProvideSceneCommands(obsManager ObsProvider, l *zap.Logger) []func(ex.Executor) {
