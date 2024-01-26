@@ -4,7 +4,6 @@ import (
 	"errors"
 	osig "obs-man/pkg/signal"
 
-	"git.miem.hse.ru/hubman/hubman-lib"
 	"git.miem.hse.ru/hubman/hubman-lib/core"
 	ex "git.miem.hse.ru/hubman/hubman-lib/executor"
 	"github.com/andreykaipov/goobs/api/requests/scenes"
@@ -134,7 +133,7 @@ func (s SetCurrentProgramSceneById) Run(p ObsProvider, l *zap.Logger) error {
 }
 
 func (s SetCurrentProgramSceneById) Code() string {
-	return "SetCurrentProgramScene"
+	return "SetCurrentProgramSceneById"
 }
 
 func (s SetCurrentProgramSceneById) Description() string {
@@ -176,7 +175,7 @@ func (s SetCurrentPreviewSceneById) Run(p ObsProvider, l *zap.Logger) error {
 }
 
 func (s SetCurrentPreviewSceneById) Code() string {
-	return "SetCurrentPreviewScene"
+	return "SetCurrentPreviewSceneById"
 }
 
 func (s SetCurrentPreviewSceneById) Description() string {
