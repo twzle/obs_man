@@ -155,7 +155,6 @@ func (m *manager) UpdateConn(c ObsConf) error {
 	}
 
 	client, err := goobs.New(c.HostPort, goobs.WithPassword(c.Password), goobs.WithResponseTimeout(1000 * time.Millisecond))
-	client.WithResponseTimeout
 	if err != nil {
 		ctxlog.Error("Failed to connect to obs", zap.Error(err))
 		return err
