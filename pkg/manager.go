@@ -161,8 +161,6 @@ func (m *manager) UpdateConn(c ObsConf) error {
 		return err
 	}
 
-	client.WithResponseTimeout(1000 * time.Millisecond)
-
 	m.cancelListen()
 	m.client = client
 	m.listenCtx, m.cancelListen = context.WithCancel(context.Background())
