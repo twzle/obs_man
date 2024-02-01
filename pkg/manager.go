@@ -154,11 +154,14 @@ func (m *manager) UpdateConn(c ObsConf) error {
 		return nil
 	}
 
-	client, err := goobs.New(c.HostPort, goobs.WithPassword(c.Password))
+	client, err := goobs.New(c.HostPort, goobs.WithPassword(c.Password), goobs.WithResponseTimeout(1000 * time.Millisecond))
+	client.WithResponseTimeout
 	if err != nil {
 		ctxlog.Error("Failed to connect to obs", zap.Error(err))
 		return err
 	}
+
+	client.WithResponseTimeout(1000 * time.Millisecond)
 
 	m.cancelListen()
 	m.client = client
@@ -173,7 +176,7 @@ func (m *manager) UpdateConn(c ObsConf) error {
 
 func NewManager(c ObsConf, logger *zap.Logger, signalsCh chan<- core.Signal) (*manager, error) {
 	connected := false
-	client, err := goobs.New(c.HostPort, goobs.WithPassword(c.Password))
+	client, err := goobs.New(c.HostPort, goobs.WithPassword(c.Password), goobs.WithResponseTimeout(1000 * time.Millisecond))
 	if err == nil {
 		connected = true
 	}
