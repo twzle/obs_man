@@ -1,9 +1,9 @@
 package command
 
 import (
+	"git.miem.hse.ru/hubman/hubman-lib/core"
 	"github.com/andreykaipov/goobs"
 	"go.uber.org/zap"
-	"git.miem.hse.ru/hubman/hubman-lib/core"
 )
 
 type RunnableCommand interface {
