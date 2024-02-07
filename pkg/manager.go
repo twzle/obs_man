@@ -12,10 +12,24 @@ import (
 	"git.miem.hse.ru/hubman/hubman-lib/core"
 	"github.com/andreykaipov/goobs"
 	obsevents "github.com/andreykaipov/goobs/api/events"
+	"github.com/gorilla/websocket"
 	"go.uber.org/zap"
 )
 
-var _ cmd.ObsProvider = &manager{}
+var (
+	_                        cmd.ObsProvider = &manager{}
+	timeoutedDialer                          = &websocket.Dialer{HandshakeTimeout: 1500 * time.Millisecond}
+	defaultHealthcheckMillis                 = 3000
+)
+
+func connectObs(hostPort, password string) (*goobs.Client, error) {
+	return goobs.New(
+		hostPort,
+		goobs.WithPassword(password),
+		goobs.WithResponseTimeout(1000*time.Millisecond),
+		goobs.WithDialer(timeoutedDialer),
+	)
+}
 
 type manager struct {
 	conf   ObsConf
@@ -117,12 +131,12 @@ func (m *manager) processObsEvent(event interface{}) {
 			OutputActive: e.OutputActive,
 			OutputState:  e.OutputState,
 		}
-	case *obsevents.ExitStarted:
+	case error, *obsevents.ExitStarted:
 		m.Close()
 	}
 }
 
-func (m *manager) GetSignals() chan<- core.Signal{
+func (m *manager) GetSignals() chan<- core.Signal {
 	return m.signals
 }
 
@@ -147,14 +161,14 @@ func (m *manager) Close() error {
 func (m *manager) UpdateConn(c ObsConf) error {
 	m.mutex.Lock()
 	defer m.mutex.Unlock()
+
 	ctxlog := m.logger.With(zap.Any("config", c))
 	ctxlog.Debug("Updating obs connection")
 	if c == m.conf && m.connected {
 		ctxlog.Debug("Already connected")
 		return nil
 	}
-
-	client, err := goobs.New(c.HostPort, goobs.WithPassword(c.Password), goobs.WithResponseTimeout(1000 * time.Millisecond))
+	client, err := connectObs(m.conf.HostPort, m.conf.Password)
 	if err != nil {
 		ctxlog.Error("Failed to connect to obs", zap.Error(err))
 		return err
@@ -173,11 +187,10 @@ func (m *manager) UpdateConn(c ObsConf) error {
 
 func NewManager(c ObsConf, logger *zap.Logger, signalsCh chan<- core.Signal) (*manager, error) {
 	connected := false
-	client, err := goobs.New(c.HostPort, goobs.WithPassword(c.Password), goobs.WithResponseTimeout(1000 * time.Millisecond))
+	client, err := connectObs(c.HostPort, c.Password)
 	if err == nil {
 		connected = true
 	}
-
 	m := &manager{
 		client:    client,
 		logger:    logger.Named("OBSManager"),
@@ -197,20 +210,29 @@ func NewManager(c ObsConf, logger *zap.Logger, signalsCh chan<- core.Signal) (*m
 }
 
 func (m *manager) HealthCheck(c ObsConf, shutdown <-chan bool) {
+	if c.HealthCheckInterval == 0 {
+		c.HealthCheckInterval = defaultHealthcheckMillis
+	}
 	ticker := time.NewTicker(time.Duration(c.HealthCheckInterval) * time.Millisecond)
+	var disconnected bool = false
 
 	for {
 		select {
 		case <-shutdown:
 			m.Close()
 			return
-		case _ = <-ticker.C:
-			var disconnected bool = false
-
+		case <-ticker.C:
 			m.mutex.Lock()
 			if m.client == nil || !m.connected {
 				disconnected = true
+			} else if m.client != nil && m.connected {
+				disconnected = false
+				if _, err := m.client.General.GetStats(); err != nil {
+					m.connected = false
+					disconnected = true
+				}
 			}
+
 			m.mutex.Unlock()
 
 			if disconnected {
