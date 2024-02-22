@@ -168,19 +168,23 @@ func (m *manager) UpdateConn(c ObsConf) error {
 		ctxlog.Debug("Already connected")
 		return nil
 	}
-	client, err := connectObs(m.conf.HostPort, m.conf.Password)
+
+	m.connected = false
+	m.conf = c
+
+	client, err := connectObs(c.HostPort, c.Password)
 	if err != nil {
 		ctxlog.Error("Failed to connect to obs", zap.Error(err))
 		return err
 	}
 
+	m.connected = true
 	m.cancelListen()
 	m.client = client
 	m.listenCtx, m.cancelListen = context.WithCancel(context.Background())
 
 	ctxlog.Debug("Successfully updated obs connection")
 	go m.listenEvents()
-	m.connected = true
 
 	return nil
 }
@@ -214,7 +218,7 @@ func (m *manager) HealthCheck(c ObsConf, shutdown <-chan bool) {
 		c.HealthCheckInterval = defaultHealthcheckMillis
 	}
 	ticker := time.NewTicker(time.Duration(c.HealthCheckInterval) * time.Millisecond)
-	var disconnected bool = false
+	disconnected := false
 
 	for {
 		select {
@@ -236,7 +240,12 @@ func (m *manager) HealthCheck(c ObsConf, shutdown <-chan bool) {
 			m.mutex.Unlock()
 
 			if disconnected {
-				m.UpdateConn(c)
+
+				m.mutex.Lock()
+				curConf := m.conf
+				m.mutex.Unlock()
+
+				m.UpdateConn(curConf)
 			}
 		}
 	}
