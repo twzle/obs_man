@@ -1,7 +1,6 @@
 package command
 
 import (
-	"git.miem.hse.ru/hubman/hubman-lib/core"
 	"github.com/andreykaipov/goobs"
 	"go.uber.org/zap"
 )
@@ -11,5 +10,5 @@ type RunnableCommand interface {
 }
 
 type ObsProvider interface {
-	Provide() (*goobs.Client, chan<- core.Signal, error)
+	Provide() (*goobs.Client, error)
 }

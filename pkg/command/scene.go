@@ -2,12 +2,12 @@ package command
 
 import (
 	"errors"
+
 	"git.miem.hse.ru/hubman/hubman-lib"
 	"git.miem.hse.ru/hubman/hubman-lib/core"
 	ex "git.miem.hse.ru/hubman/hubman-lib/executor"
 	"github.com/andreykaipov/goobs/api/requests/scenes"
 	"go.uber.org/zap"
-	osig "obs-man/pkg/signal"
 )
 
 func ProvideSceneCommands(obsManager ObsProvider, l *zap.Logger) []func(ex.Executor) {
@@ -47,13 +47,13 @@ type SetCurrentProgramScene struct {
 }
 
 func (s SetCurrentProgramScene) Run(p ObsProvider, l *zap.Logger) error {
-	obsClient, _, err := p.Provide()
+	obsClient, err := p.Provide()
 	if err != nil {
 		return err
 	}
 	l.Error("Error executing command", zap.Error(err))
 	_, err = obsClient.Scenes.SetCurrentProgramScene(&scenes.SetCurrentProgramSceneParams{
-		SceneName: s.ProgramSceneName,
+		SceneName: &s.ProgramSceneName,
 	})
 	if err != nil {
 		l.Error("Error executing command", zap.Error(err))
@@ -74,13 +74,13 @@ type SetCurrentPreviewScene struct {
 }
 
 func (s SetCurrentPreviewScene) Run(p ObsProvider, l *zap.Logger) error {
-	obsClient, _, err := p.Provide()
+	obsClient, err := p.Provide()
 	if err != nil {
 		l.Error("Error executing command", zap.Error(err))
 		return err
 	}
 	_, err = obsClient.Scenes.SetCurrentPreviewScene(&scenes.SetCurrentPreviewSceneParams{
-		SceneName: s.PreviewSceneName,
+		SceneName: &s.PreviewSceneName,
 	})
 	if err != nil {
 		l.Error("Error executing command", zap.Error(err))
@@ -103,7 +103,7 @@ type SetCurrentProgramSceneById struct {
 }
 
 func (s SetCurrentProgramSceneById) Run(p ObsProvider, l *zap.Logger) error {
-	obsClient, signals, err := p.Provide()
+	obsClient, err := p.Provide()
 	if err != nil {
 		l.Error("Error executing command", zap.Error(err))
 		return err
@@ -120,14 +120,10 @@ func (s SetCurrentProgramSceneById) Run(p ObsProvider, l *zap.Logger) error {
 	}
 	programSceneName := sceneListResponse.Scenes[len(sceneListResponse.Scenes)-s.ProgramSceneId].SceneName
 	_, err = obsClient.Scenes.SetCurrentProgramScene(&scenes.SetCurrentProgramSceneParams{
-		SceneName: programSceneName,
+		SceneName: &programSceneName,
 	})
 	if err != nil {
 		l.Error("Error executing command", zap.Error(err))
-	}
-	signals <- osig.CurrentProgramSceneChangedById{
-		SceneName: programSceneName,
-		SceneId:   s.ProgramSceneId,
 	}
 	return err
 }
@@ -145,7 +141,7 @@ type SetCurrentPreviewSceneById struct {
 }
 
 func (s SetCurrentPreviewSceneById) Run(p ObsProvider, l *zap.Logger) error {
-	obsClient, signals, err := p.Provide()
+	obsClient, err := p.Provide()
 	if err != nil {
 		l.Error("Error executing command", zap.Error(err))
 		return err
@@ -162,14 +158,10 @@ func (s SetCurrentPreviewSceneById) Run(p ObsProvider, l *zap.Logger) error {
 	}
 	previewSceneName := sceneListResponse.Scenes[len(sceneListResponse.Scenes)-s.PreviewSceneId].SceneName
 	_, err = obsClient.Scenes.SetCurrentPreviewScene(&scenes.SetCurrentPreviewSceneParams{
-		SceneName: previewSceneName,
+		SceneName: &previewSceneName,
 	})
 	if err != nil {
 		l.Error("Error executing command", zap.Error(err))
-	}
-	signals <- osig.CurrentPreviewSceneChangedById{
-		SceneName: previewSceneName,
-		SceneId:   s.PreviewSceneId,
 	}
 	return err
 }
