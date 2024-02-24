@@ -61,7 +61,7 @@ func (s StartRecord) Description() string {
 }
 
 func (s StartRecord) Run(p ObsProvider, _ *zap.Logger) error {
-	obsClient, _, err := p.Provide()
+	obsClient, err := p.Provide()
 	if err != nil {
 		return err
 	}
@@ -81,7 +81,7 @@ func (s StopRecord) Description() string {
 }
 
 func (s StopRecord) Run(p ObsProvider, _ *zap.Logger) error {
-	obsClient, _, err := p.Provide()
+	obsClient, err := p.Provide()
 	if err != nil {
 		return err
 	}
@@ -101,7 +101,7 @@ func (t ToggleRecord) Description() string {
 }
 
 func (t ToggleRecord) Run(p ObsProvider, _ *zap.Logger) error {
-	obsClient, _, err := p.Provide()
+	obsClient, err := p.Provide()
 	if err != nil {
 		return err
 	}
@@ -127,7 +127,7 @@ func (p PauseRecord) Description() string {
 }
 
 func (p PauseRecord) Run(pr ObsProvider, _ *zap.Logger) error {
-	obsClient, _, err := pr.Provide()
+	obsClient, err := pr.Provide()
 	if err != nil {
 		return err
 	}
@@ -147,7 +147,7 @@ func (r ResumeRecord) Description() string {
 }
 
 func (r ResumeRecord) Run(pr ObsProvider, _ *zap.Logger) error {
-	obsClient, _, err := pr.Provide()
+	obsClient, err := pr.Provide()
 	if err != nil {
 		return err
 	}
@@ -167,7 +167,7 @@ func (t ToggleRecordPause) Description() string {
 }
 
 func (t ToggleRecordPause) Run(pr ObsProvider, _ *zap.Logger) error {
-	obsClient, _, err := pr.Provide()
+	obsClient, err := pr.Provide()
 	if err != nil {
 		return err
 	}

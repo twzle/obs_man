@@ -62,12 +62,29 @@ func (m *manager) listenEvents() {
 func (m *manager) processObsEvent(event interface{}) {
 	switch e := event.(type) {
 	case *obsevents.CurrentPreviewSceneChanged:
-		m.signals <- &osig.CurrentPreviewSceneChanged{
-			SceneName: e.SceneName,
+		sceneId, err := m.GetSceneId(e.SceneName)
+		if err != nil {
+			m.logger.Debug(
+				"Preview scene changed signal processing error",
+				zap.Error(err))
+			return
 		}
-	case *obsevents.CurrentProgramSceneChanged:
-		m.signals <- &osig.CurrentProgramSceneChanged{
+		m.signals <- &osig.CurrentPreviewSceneChangedById{
 			SceneName: e.SceneName,
+			SceneId:   sceneId,
+		}
+
+	case *obsevents.CurrentProgramSceneChanged:
+		sceneId, err := m.GetSceneId(e.SceneName)
+		if err != nil {
+			m.logger.Debug(
+				"Program scene changed signal processing error",
+				zap.Error(err))
+			return
+		}
+		m.signals <- &osig.CurrentProgramSceneChangedById{
+			SceneName: e.SceneName,
+			SceneId:   sceneId,
 		}
 	case *obsevents.InputMuteStateChanged:
 		m.signals <- &osig.InputMuteStateChanged{
@@ -140,11 +157,26 @@ func (m *manager) GetSignals() chan<- core.Signal {
 	return m.signals
 }
 
-func (m *manager) Provide() (*goobs.Client, chan<- core.Signal, error) {
-	if m.client == nil || !m.connected {
-		return nil, nil, errors.New("no opened obs connection")
+func (m *manager) GetSceneId(sceneName string) (int, error) {
+	obsClient, err := m.Provide()
+	if err != nil {
+		return -1, err
 	}
-	return m.client, m.signals, nil
+
+	sceneListResponse, _ := obsClient.Scenes.GetSceneList()
+	for _, scene := range sceneListResponse.Scenes {
+		if scene.SceneName == sceneName {
+			return len(sceneListResponse.Scenes) - scene.SceneIndex, nil
+		}
+	}
+	return -1, errors.New("can't find scene with given name")
+}
+
+func (m *manager) Provide() (*goobs.Client, error) {
+	if m.client == nil || !m.connected {
+		return nil, errors.New("no opened obs connection")
+	}
+	return m.client, nil
 }
 
 func (m *manager) Close() error {

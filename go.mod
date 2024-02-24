@@ -6,8 +6,8 @@ toolchain go1.21.1
 
 require (
 	git.miem.hse.ru/hubman/hubman-lib v1.0.7
-	github.com/andreykaipov/goobs v0.12.1
-	github.com/gorilla/websocket v1.5.0
+	github.com/andreykaipov/goobs v1.2.2
+	github.com/gorilla/websocket v1.5.1
 	go.uber.org/zap v1.26.0
 )
 
@@ -26,12 +26,14 @@ require (
 	github.com/mailru/easyjson v0.7.7 // indirect
 	github.com/mitchellh/copystructure v1.0.0 // indirect
 	github.com/mitchellh/reflectwalk v1.0.0 // indirect
+	github.com/mmcloughlin/profile v0.1.1 // indirect
 	github.com/nu7hatch/gouuid v0.0.0-20131221200532-179d4d0c4d8d // indirect
 	github.com/oapi-codegen/runtime v1.0.0 // indirect
 	github.com/redis/go-redis/v9 v9.1.0 // indirect
 	github.com/wk8/go-ordered-map/v2 v2.1.8 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
 	golang.org/x/exp v0.0.0-20240205201215-2c58cdc269a3 // indirect
+	golang.org/x/net v0.17.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 	moul.io/chizap v1.0.3 // indirect
 )

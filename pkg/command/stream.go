@@ -52,7 +52,7 @@ func (t ToggleStream) Description() string {
 }
 
 func (t ToggleStream) Run(p ObsProvider, _ *zap.Logger) error {
-	obsClient, _, err := p.Provide()
+	obsClient, err := p.Provide()
 	if err != nil {
 		return err
 	}
@@ -72,7 +72,7 @@ func (s StartStream) Description() string {
 }
 
 func (s StartStream) Run(p ObsProvider, _ *zap.Logger) error {
-	obsClient, _, err := p.Provide()
+	obsClient, err := p.Provide()
 	if err != nil {
 		return err
 	}
@@ -92,7 +92,7 @@ func (s StopStream) Description() string {
 }
 
 func (s StopStream) Run(p ObsProvider, _ *zap.Logger) error {
-	obsClient, _, err := p.Provide()
+	obsClient, err := p.Provide()
 	if err != nil {
 		return err
 	}
@@ -115,12 +115,12 @@ func (s SendStreamCaption) Description() string {
 }
 
 func (s SendStreamCaption) Run(p ObsProvider, _ *zap.Logger) error {
-	obsClient, _, err := p.Provide()
+	obsClient, err := p.Provide()
 	if err != nil {
 		return err
 	}
 	_, err = obsClient.Stream.SendStreamCaption(&stream.SendStreamCaptionParams{
-		CaptionText: s.StreamCaption,
+		CaptionText: &s.StreamCaption,
 	})
 	return err
 }

@@ -62,12 +62,12 @@ func (s SetCurrentSceneTransition) Description() string {
 }
 
 func (s SetCurrentSceneTransition) Run(p ObsProvider, _ *zap.Logger) error {
-	obsClient, _, err := p.Provide()
+	obsClient, err := p.Provide()
 	if err != nil {
 		return err
 	}
 	_, err = obsClient.Transitions.SetCurrentSceneTransition(&transitions.SetCurrentSceneTransitionParams{
-		TransitionName: s.TransitionName,
+		TransitionName: &s.TransitionName,
 	})
 	return err
 }
@@ -84,7 +84,7 @@ func (s TriggerStudioModeTransition) Description() string {
 }
 
 func (s TriggerStudioModeTransition) Run(p ObsProvider, _ *zap.Logger) error {
-	obsClient, _, err := p.Provide()
+	obsClient, err := p.Provide()
 	if err != nil {
 		return err
 	}
@@ -105,7 +105,7 @@ func (s TriggerStudioModeTransitionWithName) Description() string {
 }
 
 func (s TriggerStudioModeTransitionWithName) Run(p ObsProvider, l *zap.Logger) error {
-	obsClient, _, err := p.Provide()
+	obsClient, err := p.Provide()
 	if err != nil {
 		return err
 	}
@@ -114,7 +114,7 @@ func (s TriggerStudioModeTransitionWithName) Run(p ObsProvider, l *zap.Logger) e
 		return err
 	}
 	_, err = obsClient.Transitions.SetCurrentSceneTransition(&transitions.SetCurrentSceneTransitionParams{
-		TransitionName: s.TransitionName,
+		TransitionName: &s.TransitionName,
 	})
 	if err != nil {
 		return err
@@ -125,7 +125,7 @@ func (s TriggerStudioModeTransitionWithName) Run(p ObsProvider, l *zap.Logger) e
 	}
 	<-time.After(300 * time.Millisecond)
 	_, err = obsClient.Transitions.SetCurrentSceneTransition(&transitions.SetCurrentSceneTransitionParams{
-		TransitionName: curTransition.TransitionName,
+		TransitionName: &curTransition.TransitionName,
 	})
 	return err
 }

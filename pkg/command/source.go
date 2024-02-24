@@ -47,12 +47,12 @@ type SetInputMute struct {
 }
 
 func (s SetInputMute) Run(p ObsProvider, _ *zap.Logger) error {
-	obsClient, _, err := p.Provide()
+	obsClient, err := p.Provide()
 	if err != nil {
 		return err
 	}
 	_, err = obsClient.Inputs.SetInputMute(&inputs.SetInputMuteParams{
-		InputName: s.InputName,
+		InputName: &s.InputName,
 	})
 	return err
 }
@@ -70,12 +70,12 @@ type ToggleInputMute struct {
 }
 
 func (t ToggleInputMute) Run(p ObsProvider, _ *zap.Logger) error {
-	obsClient, _, err := p.Provide()
+	obsClient, err := p.Provide()
 	if err != nil {
 		return err
 	}
 	_, err = obsClient.Inputs.ToggleInputMute(&inputs.ToggleInputMuteParams{
-		InputName: t.InputName,
+		InputName: &t.InputName,
 	})
 	return err
 }
@@ -94,12 +94,12 @@ type ToggleSceneItemEnabled struct {
 }
 
 func (t ToggleSceneItemEnabled) Run(p ObsProvider, _ *zap.Logger) error {
-	obsClient, _, err := p.Provide()
+	obsClient, err := p.Provide()
 	if err != nil {
 		return err
 	}
 	items, err := obsClient.SceneItems.GetSceneItemList(&sceneitems.GetSceneItemListParams{
-		SceneName: t.SceneName,
+		SceneName: &t.SceneName,
 	})
 	if err != nil {
 		return err
@@ -109,8 +109,8 @@ func (t ToggleSceneItemEnabled) Run(p ObsProvider, _ *zap.Logger) error {
 			enabled := !item.SceneItemEnabled
 			_, err = obsClient.SceneItems.SetSceneItemEnabled(
 				&sceneitems.SetSceneItemEnabledParams{
-					SceneName:        t.SceneName,
-					SceneItemId:      float64(item.SceneItemID),
+					SceneName:        &t.SceneName,
+					SceneItemId:      &item.SceneItemID,
 					SceneItemEnabled: &enabled,
 				},
 			)
@@ -133,7 +133,7 @@ type ToggleCurrentSceneItemEnabled struct {
 }
 
 func (t ToggleCurrentSceneItemEnabled) Run(p ObsProvider, _ *zap.Logger) error {
-	obsClient, _, err := p.Provide()
+	obsClient, err := p.Provide()
 	if err != nil {
 		return err
 	}
@@ -142,7 +142,7 @@ func (t ToggleCurrentSceneItemEnabled) Run(p ObsProvider, _ *zap.Logger) error {
 		return err
 	}
 	items, err := obsClient.SceneItems.GetSceneItemList(&sceneitems.GetSceneItemListParams{
-		SceneName: curScene.CurrentProgramSceneName,
+		SceneName: &curScene.CurrentProgramSceneName,
 	})
 	if err != nil {
 		return err
@@ -152,8 +152,8 @@ func (t ToggleCurrentSceneItemEnabled) Run(p ObsProvider, _ *zap.Logger) error {
 			enabled := !item.SceneItemEnabled
 			_, err = obsClient.SceneItems.SetSceneItemEnabled(
 				&sceneitems.SetSceneItemEnabledParams{
-					SceneName:        curScene.CurrentProgramSceneName,
-					SceneItemId:      float64(item.SceneItemID),
+					SceneName:        &curScene.CurrentProgramSceneName,
+					SceneItemId:      &item.SceneItemID,
 					SceneItemEnabled: &enabled,
 				},
 			)
