@@ -201,6 +201,14 @@ func (m *manager) UpdateConn(c ObsConf) error {
 		return nil
 	}
 
+	m.cancelListen()
+	if m.connected {
+		err := m.client.Disconnect()
+		if err != nil {
+			ctxlog.Error("Failed to disconnect from previous obs client", zap.Error(err))
+		}
+	}
+
 	m.connected = false
 	m.conf = c
 
@@ -211,7 +219,7 @@ func (m *manager) UpdateConn(c ObsConf) error {
 	}
 
 	m.connected = true
-	m.cancelListen()
+
 	m.client = client
 	m.listenCtx, m.cancelListen = context.WithCancel(context.Background())
 
