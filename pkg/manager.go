@@ -17,9 +17,10 @@ import (
 )
 
 var (
-	_                        cmd.ObsProvider = &manager{}
-	timeoutedDialer                          = &websocket.Dialer{HandshakeTimeout: 1500 * time.Millisecond}
-	defaultHealthcheckMillis                 = 3000
+	_                         cmd.ObsProvider = &manager{}
+	timeoutedDialer                           = &websocket.Dialer{HandshakeTimeout: 1500 * time.Millisecond}
+	defaultHealthcheckMillis                  = 3000
+	obsDisconnectedCheckLabel                 = "OBS_DISCONNECTED"
 )
 
 func connectObs(hostPort, password string) (*goobs.Client, error) {
@@ -41,6 +42,7 @@ type manager struct {
 	listenCtx    context.Context
 	cancelListen context.CancelFunc
 	signals      chan<- core.Signal
+	checkManager core.CheckRegistry
 }
 
 func (m *manager) listenEvents() {
@@ -187,6 +189,11 @@ func (m *manager) Close() error {
 		_ = m.client.Disconnect()
 	}
 	m.connected = false
+
+	m.checkManager.RegisterFail(core.NewCheck(
+		obsDisconnectedCheckLabel,
+		"obs was disconnected",
+	))
 	return nil
 }
 
@@ -210,6 +217,10 @@ func (m *manager) UpdateConn(c ObsConf) error {
 	}
 
 	m.connected = false
+	m.checkManager.RegisterFail(core.NewCheck(
+		obsDisconnectedCheckLabel,
+		"obs was disconnected",
+	))
 	m.conf = c
 
 	client, err := connectObs(c.HostPort, c.Password)
@@ -219,6 +230,10 @@ func (m *manager) UpdateConn(c ObsConf) error {
 	}
 
 	m.connected = true
+	m.checkManager.RegisterSuccess(core.NewCheck(
+		obsDisconnectedCheckLabel,
+		"obs is connected",
+	))
 
 	m.client = client
 	m.listenCtx, m.cancelListen = context.WithCancel(context.Background())
@@ -229,18 +244,24 @@ func (m *manager) UpdateConn(c ObsConf) error {
 	return nil
 }
 
-func NewManager(c ObsConf, logger *zap.Logger, signalsCh chan<- core.Signal) (*manager, error) {
+func NewManager(c ObsConf, logger *zap.Logger, signalsCh chan<- core.Signal, checkManager core.CheckRegistry) (*manager, error) {
 	connected := false
 	client, err := connectObs(c.HostPort, c.Password)
 	if err == nil {
 		connected = true
+		check := core.NewCheck(
+			obsDisconnectedCheckLabel,
+			"obs is connected",
+		)
+		checkManager.RegisterSuccess(check)
 	}
 	m := &manager{
-		client:    client,
-		logger:    logger.Named("OBSManager"),
-		signals:   signalsCh,
-		conf:      c,
-		connected: connected,
+		client:       client,
+		logger:       logger.Named("OBSManager"),
+		signals:      signalsCh,
+		conf:         c,
+		connected:    connected,
+		checkManager: checkManager,
 	}
 
 	m.listenCtx, m.cancelListen = context.WithCancel(context.Background())
@@ -273,6 +294,10 @@ func (m *manager) HealthCheck(c ObsConf, shutdown <-chan bool) {
 				disconnected = false
 				if _, err := m.client.General.GetStats(); err != nil {
 					m.connected = false
+					m.checkManager.RegisterFail(core.NewCheck(
+						obsDisconnectedCheckLabel,
+						"obs was disconnected",
+					))
 					disconnected = true
 				}
 			}
