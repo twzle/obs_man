@@ -36,8 +36,8 @@ func main() {
 	signalsCh := make(chan hcore.Signal)
 
 	app := hcore.NewContainer(conf.System.Logging)
-
-	obsManager, err := obsman.NewManager(userConfig.ObsConf, app.Logger(), signalsCh)
+	checkManager := hcore.NewCheckManager()
+	obsManager, err := obsman.NewManager(userConfig.ObsConf, app.Logger(), signalsCh, checkManager)
 	if err != nil {
 		app.Logger().Warn("Unable to create obs manager", zap.Error(err))
 	}
@@ -78,6 +78,7 @@ func main() {
 			}
 			obsManager.UpdateConn(newConf.ObsConf)
 		}),
+		hubman.WithCheckRegistry(checkManager),
 	))
 
 	<-app.WaitShutdown()
