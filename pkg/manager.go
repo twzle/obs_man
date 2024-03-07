@@ -296,6 +296,7 @@ func (m *manager) HealthCheck(c ObsConf, shutdown <-chan bool) {
 				disconnected = false
 				if _, err := m.client.General.GetStats(); err != nil {
 					m.connected = false
+					m.client.Disconnect()
 					m.checkManager.RegisterFail(core.NewCheck(
 						obsDisconnectedCheckLabel,
 						"obs was disconnected",
