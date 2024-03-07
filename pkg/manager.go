@@ -49,11 +49,13 @@ func (m *manager) listenEvents() {
 	for {
 		select {
 		case ev := <-m.client.IncomingEvents:
-			m.logger.Debug(
-				"Received event from obs",
-				zap.Any("event", ev),
-				zap.String("event_type", reflect.TypeOf(ev).String()),
-			)
+			if ev != nil {
+				m.logger.Debug(
+					"Received event from obs",
+					zap.Any("event", ev),
+					zap.String("event_type", reflect.TypeOf(ev).String()),
+				)
+			}
 			m.processObsEvent(ev)
 		case <-m.listenCtx.Done():
 			return
@@ -150,7 +152,7 @@ func (m *manager) processObsEvent(event interface{}) {
 			OutputActive: e.OutputActive,
 			OutputState:  e.OutputState,
 		}
-	case error, *obsevents.ExitStarted:
+	case nil, error, *obsevents.ExitStarted:
 		m.Close()
 	}
 }
@@ -294,6 +296,7 @@ func (m *manager) HealthCheck(c ObsConf, shutdown <-chan bool) {
 				disconnected = false
 				if _, err := m.client.General.GetStats(); err != nil {
 					m.connected = false
+					m.client.Disconnect()
 					m.checkManager.RegisterFail(core.NewCheck(
 						obsDisconnectedCheckLabel,
 						"obs was disconnected",
