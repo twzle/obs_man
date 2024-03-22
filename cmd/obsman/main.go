@@ -74,9 +74,9 @@ func main() {
 		hubman.WithOnConfigRefresh(func(c core.AgentConfiguration) {
 			newConf, ok := c.User.(*obsman.Conf)
 			if !ok {
-				log.Fatal("Invalid new config provided", zap.Any("newConf", c.User))
+				app.Logger().Error("Invalid new config provided", zap.Any("newConf", c.User))
 			}
-			obsManager.UpdateConn(newConf.ObsConf)
+			obsManager.UpdateConnection(newConf.ObsConf)
 		}),
 		hubman.WithCheckRegistry(checkManager),
 	))

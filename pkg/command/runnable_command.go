@@ -12,3 +12,10 @@ type RunnableCommand interface {
 type ObsProvider interface {
 	Provide() (*goobs.Client, error)
 }
+
+func logErr(log *zap.Logger, msg string, err error) error {
+	if err != nil {
+		log.Error(msg, zap.Error(err))
+	}
+	return err
+}

@@ -51,13 +51,13 @@ func (t ToggleStream) Description() string {
 	return "Toggles Stream, ex: streaming -> stop, stop -> streaming"
 }
 
-func (t ToggleStream) Run(p ObsProvider, _ *zap.Logger) error {
+func (t ToggleStream) Run(p ObsProvider, log *zap.Logger) error {
 	obsClient, err := p.Provide()
 	if err != nil {
-		return err
+		return logErr(log, "p.Provide", err)
 	}
 	_, err = obsClient.Stream.ToggleStream()
-	return err
+	return logErr(log, "obsClient.Stream.ToggleStream", err)
 }
 
 type StartStream struct {
@@ -71,13 +71,13 @@ func (s StartStream) Description() string {
 	return "Starts Stream, if it is already running is no-op"
 }
 
-func (s StartStream) Run(p ObsProvider, _ *zap.Logger) error {
+func (s StartStream) Run(p ObsProvider, log *zap.Logger) error {
 	obsClient, err := p.Provide()
 	if err != nil {
-		return err
+		return logErr(log, "p.Provide", err)
 	}
 	_, err = obsClient.Stream.StartStream()
-	return err
+	return logErr(log, "obsClient.Stream.StartStream", err)
 }
 
 type StopStream struct {
@@ -91,13 +91,13 @@ func (s StopStream) Description() string {
 	return "Stops Stream, if it is off - is no-op"
 }
 
-func (s StopStream) Run(p ObsProvider, _ *zap.Logger) error {
+func (s StopStream) Run(p ObsProvider, log *zap.Logger) error {
 	obsClient, err := p.Provide()
 	if err != nil {
-		return err
+		return logErr(log, "p.Provide", err)
 	}
 	_, err = obsClient.Stream.StopStream()
-	return err
+	return logErr(log, "obsClient.Stream.StopStream", err)
 }
 
 /*----------------------------- SendCaption for stream -----------------------*/
@@ -114,13 +114,13 @@ func (s SendStreamCaption) Description() string {
 	return "Sends StreamCaption"
 }
 
-func (s SendStreamCaption) Run(p ObsProvider, _ *zap.Logger) error {
+func (s SendStreamCaption) Run(p ObsProvider, log *zap.Logger) error {
 	obsClient, err := p.Provide()
 	if err != nil {
-		return err
+		return logErr(log, "p.Provide", err)
 	}
 	_, err = obsClient.Stream.SendStreamCaption(&stream.SendStreamCaptionParams{
 		CaptionText: &s.StreamCaption,
 	})
-	return err
+	return logErr(log, "obsClient.Stream.SendStreamCaption", err)
 }

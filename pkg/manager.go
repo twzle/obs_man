@@ -3,8 +3,6 @@ package obsman
 import (
 	"context"
 	"errors"
-	cmd "obs-man/pkg/command"
-	osig "obs-man/pkg/signal"
 	"reflect"
 	"sync"
 	"time"
@@ -14,6 +12,8 @@ import (
 	obsevents "github.com/andreykaipov/goobs/api/events"
 	"github.com/gorilla/websocket"
 	"go.uber.org/zap"
+	cmd "obs-man/pkg/command"
+	osig "obs-man/pkg/signal"
 )
 
 var (
@@ -199,7 +199,7 @@ func (m *manager) Close() error {
 	return nil
 }
 
-func (m *manager) UpdateConn(c ObsConf) error {
+func (m *manager) UpdateConnection(c ObsConf) error {
 	m.mutex.Lock()
 	defer m.mutex.Unlock()
 
@@ -313,7 +313,7 @@ func (m *manager) HealthCheck(c ObsConf, shutdown <-chan bool) {
 				curConf := m.conf
 				m.mutex.Unlock()
 
-				m.UpdateConn(curConf)
+				m.UpdateConnection(curConf)
 			}
 		}
 	}

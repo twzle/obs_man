@@ -96,8 +96,6 @@ func (s SetCurrentPreviewScene) Description() string {
 	return "Sets current Preview Scene"
 }
 
-//
-
 type SetCurrentProgramSceneById struct {
 	ProgramSceneId int `hubman:"program_scene_id"`
 }

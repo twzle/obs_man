@@ -22,15 +22,15 @@ type SetStudioModeEnabled struct {
 	UseStudioMode bool `hubman:"use_studio_mode"`
 }
 
-func (s SetStudioModeEnabled) Run(p ObsProvider, _ *zap.Logger) error {
+func (s SetStudioModeEnabled) Run(p ObsProvider, log *zap.Logger) error {
 	obsClient, err := p.Provide()
 	if err != nil {
-		return err
+		return logErr(log, "p.Provide", err)
 	}
 	_, err = obsClient.Ui.SetStudioModeEnabled(&ui.SetStudioModeEnabledParams{
 		StudioModeEnabled: &s.UseStudioMode,
 	})
-	return err
+	return logErr(log, "obsClient.Ui.SetStudioModeEnabled", err)
 }
 
 func (s SetStudioModeEnabled) Description() string {
