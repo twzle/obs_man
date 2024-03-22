@@ -27,12 +27,18 @@ func ProvideTransitionCommands(obsManager ObsProvider, l *zap.Logger) []func(ex.
 			cp(&cmd)
 			cmd.Run(obsManager, l.Named(cmd.Code()))
 		}),
+		hubman.WithCommand(SetTBarPosition{}, func(_ core.SerializedCommand, cp ex.CommandParser) {
+			cmd := SetTBarPosition{}
+			cp(&cmd)
+			cmd.Run(obsManager, l.Named(cmd.Code()))
+		}),
 	}
 }
 
 var _ RunnableCommand = &SetCurrentSceneTransition{}
 var _ RunnableCommand = &TriggerStudioModeTransition{}
 var _ RunnableCommand = &TriggerStudioModeTransitionWithName{}
+var _ RunnableCommand = &SetTBarPosition{}
 
 // TODO add commands to executor
 type SetSceneSceneTransitionOverride struct {
@@ -61,15 +67,15 @@ func (s SetCurrentSceneTransition) Description() string {
 	return "Sets Current Scene Transition"
 }
 
-func (s SetCurrentSceneTransition) Run(p ObsProvider, _ *zap.Logger) error {
+func (s SetCurrentSceneTransition) Run(p ObsProvider, log *zap.Logger) error {
 	obsClient, err := p.Provide()
 	if err != nil {
-		return err
+		return logErr(log, "p.Provide", err)
 	}
 	_, err = obsClient.Transitions.SetCurrentSceneTransition(&transitions.SetCurrentSceneTransitionParams{
 		TransitionName: &s.TransitionName,
 	})
-	return err
+	return logErr(log, "obsClient.Transitions.SetCurrentSceneTransition", err)
 }
 
 type TriggerStudioModeTransition struct {
@@ -83,13 +89,13 @@ func (s TriggerStudioModeTransition) Description() string {
 	return "Triggers selected in OBS studio mode transition"
 }
 
-func (s TriggerStudioModeTransition) Run(p ObsProvider, _ *zap.Logger) error {
+func (s TriggerStudioModeTransition) Run(p ObsProvider, log *zap.Logger) error {
 	obsClient, err := p.Provide()
 	if err != nil {
-		return err
+		return logErr(log, "p.Provide", err)
 	}
 	_, err = obsClient.Transitions.TriggerStudioModeTransition()
-	return err
+	return logErr(log, "obsClient.Transitions.TriggerStudioModeTransition:", err)
 }
 
 type TriggerStudioModeTransitionWithName struct {
@@ -104,30 +110,30 @@ func (s TriggerStudioModeTransitionWithName) Description() string {
 	return "Triggers studio mode transition with name included in command"
 }
 
-func (s TriggerStudioModeTransitionWithName) Run(p ObsProvider, l *zap.Logger) error {
+func (s TriggerStudioModeTransitionWithName) Run(p ObsProvider, log *zap.Logger) error {
 	obsClient, err := p.Provide()
 	if err != nil {
-		return err
+		return logErr(log, "p.Provide", err)
 	}
 	curTransition, err := obsClient.Transitions.GetCurrentSceneTransition()
 	if err != nil {
-		return err
+		return logErr(log, "obsClient.Transitions.GetCurrentSceneTransition", err)
 	}
 	_, err = obsClient.Transitions.SetCurrentSceneTransition(&transitions.SetCurrentSceneTransitionParams{
 		TransitionName: &s.TransitionName,
 	})
 	if err != nil {
-		return err
+		return logErr(log, "obsClient.Transitions.SetCurrentSceneTransition", err)
 	}
 	_, err = obsClient.Transitions.TriggerStudioModeTransition()
 	if err != nil {
-		return err
+		return logErr(log, "obsClient.Transitions.TriggerStudioModeTransition", err)
 	}
 	<-time.After(300 * time.Millisecond)
 	_, err = obsClient.Transitions.SetCurrentSceneTransition(&transitions.SetCurrentSceneTransitionParams{
 		TransitionName: &curTransition.TransitionName,
 	})
-	return err
+	return logErr(log, "obsClient.Transitions.SetCurrentSceneTransition", err)
 }
 
 type SetCurrentSceneCollection struct {
@@ -154,4 +160,31 @@ func (s SetSceneItemBlendMode) Code() string {
 
 func (s SetSceneItemBlendMode) Description() string {
 	return "Sets Scene ItemBlendMode"
+}
+
+type SetTBarPosition struct {
+	Position float64 `hubman:"position"` // should be in [0, 1]
+	Release  bool    `hubman:"release"`
+}
+
+func (s SetTBarPosition) Code() string {
+	return "SetTBarPosition"
+}
+
+func (s SetTBarPosition) Description() string {
+	return "Sets Tbar postion in OBS studio mode from 0 to 1"
+}
+
+func (s SetTBarPosition) Run(p ObsProvider, log *zap.Logger) error {
+	obsClient, err := p.Provide()
+	if err != nil {
+		return logErr(log, "p.Provide", err)
+	}
+
+	_, err = obsClient.Transitions.SetTBarPosition(&transitions.SetTBarPositionParams{
+		Position: &s.Position,
+		Release:  &s.Release,
+	})
+
+	return logErr(log, "obsClient.Transitions.SetTBarPosition", err)
 }

@@ -1,4 +1,4 @@
-s:
-  host_port: 127.0.0.1:4445
+obs:
+  host_port: 127.0.0.1:4455
   password: tquBX5csOEehvEyC
   health_check_interval: 1000

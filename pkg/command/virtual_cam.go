@@ -42,13 +42,13 @@ func (t ToggleVirtualCam) Description() string {
 	return "Toggles VirtualCam, ex: enabled -> disable, disabled -> enable"
 }
 
-func (t ToggleVirtualCam) Run(p ObsProvider, _ *zap.Logger) error {
+func (t ToggleVirtualCam) Run(p ObsProvider, log *zap.Logger) error {
 	obsClient, err := p.Provide()
 	if err != nil {
-		return err
+		return logErr(log, "p.Provide", err)
 	}
 	_, err = obsClient.Outputs.ToggleVirtualCam()
-	return err
+	return logErr(log, "obsClient.Outputs.ToggleVirtualCam", err)
 }
 
 type StopVirtualCam struct {
@@ -62,13 +62,13 @@ func (s StopVirtualCam) Description() string {
 	return "Stops VirtualCam, if it is not running - is no-op"
 }
 
-func (s StopVirtualCam) Run(p ObsProvider, _ *zap.Logger) error {
+func (s StopVirtualCam) Run(p ObsProvider, log *zap.Logger) error {
 	obsClient, err := p.Provide()
 	if err != nil {
-		return err
+		return logErr(log, "p.Provide", err)
 	}
 	_, err = obsClient.Outputs.StopVirtualCam()
-	return err
+	return logErr(log, "obsClient.Outputs.StopVirtualCam", err)
 }
 
 type StartVirtualCam struct {
@@ -82,11 +82,11 @@ func (s StartVirtualCam) Description() string {
 	return "Starts VirtualCam, if it is already running - is no-op"
 }
 
-func (s StartVirtualCam) Run(p ObsProvider, _ *zap.Logger) error {
+func (s StartVirtualCam) Run(p ObsProvider, log *zap.Logger) error {
 	obsClient, err := p.Provide()
 	if err != nil {
-		return err
+		return logErr(log, "p.Provide", err)
 	}
 	_, err = obsClient.Outputs.StartVirtualCam()
-	return err
+	return logErr(log, "obsClient.Outputs.StartVirtualCam", err)
 }

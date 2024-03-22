@@ -46,15 +46,15 @@ type SetInputMute struct {
 	Muted     bool   `hubman:"muted"`
 }
 
-func (s SetInputMute) Run(p ObsProvider, _ *zap.Logger) error {
+func (s SetInputMute) Run(p ObsProvider, log *zap.Logger) error {
 	obsClient, err := p.Provide()
 	if err != nil {
-		return err
+		return logErr(log, "p.Provide", err)
 	}
 	_, err = obsClient.Inputs.SetInputMute(&inputs.SetInputMuteParams{
 		InputName: &s.InputName,
 	})
-	return err
+	return logErr(log, "obsClient.Inputs.SetInputMute", err)
 }
 
 func (s SetInputMute) Code() string {
@@ -69,15 +69,15 @@ type ToggleInputMute struct {
 	InputName string `hubman:"input_name"`
 }
 
-func (t ToggleInputMute) Run(p ObsProvider, _ *zap.Logger) error {
+func (t ToggleInputMute) Run(p ObsProvider, log *zap.Logger) error {
 	obsClient, err := p.Provide()
 	if err != nil {
-		return err
+		return logErr(log, "p.Provide", err)
 	}
 	_, err = obsClient.Inputs.ToggleInputMute(&inputs.ToggleInputMuteParams{
 		InputName: &t.InputName,
 	})
-	return err
+	return logErr(log, "obsClient.Inputs.ToggleInputMute", err)
 }
 
 func (t ToggleInputMute) Code() string {
@@ -93,10 +93,10 @@ type ToggleSceneItemEnabled struct {
 	SceneName     string `hubman:"scene_name"`
 }
 
-func (t ToggleSceneItemEnabled) Run(p ObsProvider, _ *zap.Logger) error {
+func (t ToggleSceneItemEnabled) Run(p ObsProvider, log *zap.Logger) error {
 	obsClient, err := p.Provide()
 	if err != nil {
-		return err
+		return logErr(log, "p.Provide", err)
 	}
 	items, err := obsClient.SceneItems.GetSceneItemList(&sceneitems.GetSceneItemListParams{
 		SceneName: &t.SceneName,
@@ -114,10 +114,10 @@ func (t ToggleSceneItemEnabled) Run(p ObsProvider, _ *zap.Logger) error {
 					SceneItemEnabled: &enabled,
 				},
 			)
-			return err
+			return logErr(log, "obsClient.SceneItems.SetSceneItemEnabled", err)
 		}
 	}
-	return errors.New("not found scene item")
+	return logErr(log, "cmd.ToggleSceneItemEnabled.Run", errors.New("not found scene item"))
 }
 
 func (t ToggleSceneItemEnabled) Code() string {
@@ -132,20 +132,20 @@ type ToggleCurrentSceneItemEnabled struct {
 	SceneItemName string `hubman:"scene_item_name"`
 }
 
-func (t ToggleCurrentSceneItemEnabled) Run(p ObsProvider, _ *zap.Logger) error {
+func (t ToggleCurrentSceneItemEnabled) Run(p ObsProvider, log *zap.Logger) error {
 	obsClient, err := p.Provide()
 	if err != nil {
-		return err
+		return logErr(log, "p.Provide", err)
 	}
 	curScene, err := obsClient.Scenes.GetCurrentProgramScene()
 	if err != nil {
-		return err
+		return logErr(log, "obsClient.Scenes.GetCurrentProgramScene", err)
 	}
 	items, err := obsClient.SceneItems.GetSceneItemList(&sceneitems.GetSceneItemListParams{
 		SceneName: &curScene.CurrentProgramSceneName,
 	})
 	if err != nil {
-		return err
+		return logErr(log, "obsClient.SceneItems.GetSceneItemList", err)
 	}
 	for _, item := range items.SceneItems {
 		if item.SourceName == t.SceneItemName {
@@ -157,10 +157,10 @@ func (t ToggleCurrentSceneItemEnabled) Run(p ObsProvider, _ *zap.Logger) error {
 					SceneItemEnabled: &enabled,
 				},
 			)
-			return err
+			return logErr(log, "obsClient.SceneItems.SetSceneItemEnabled", err)
 		}
 	}
-	return errors.New("not found scene item")
+	return logErr(log, "cmd.ToggleCurrentSceneItemEnabled.Run", errors.New("not found scene item"))
 }
 
 func (t ToggleCurrentSceneItemEnabled) Code() string {

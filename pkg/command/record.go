@@ -60,13 +60,13 @@ func (s StartRecord) Description() string {
 	return "Starts record, if it is already started - is noop. Similar to start record button"
 }
 
-func (s StartRecord) Run(p ObsProvider, _ *zap.Logger) error {
+func (s StartRecord) Run(p ObsProvider, log *zap.Logger) error {
 	obsClient, err := p.Provide()
 	if err != nil {
-		return err
+		return logErr(log, "p.Provide", err)
 	}
 	_, err = obsClient.Record.StartRecord()
-	return err
+	return logErr(log, "obsClient.Record.StartRecord", err)
 }
 
 type StopRecord struct {
@@ -80,13 +80,13 @@ func (s StopRecord) Description() string {
 	return "Toggles off record, if it is off - is noop. Similar to stop record button"
 }
 
-func (s StopRecord) Run(p ObsProvider, _ *zap.Logger) error {
+func (s StopRecord) Run(p ObsProvider, log *zap.Logger) error {
 	obsClient, err := p.Provide()
 	if err != nil {
-		return err
+		return logErr(log, "p.Provide", err)
 	}
 	_, err = obsClient.Record.StopRecord()
-	return err
+	return logErr(log, "obsClient.Record.StopRecord", err)
 }
 
 type ToggleRecord struct {
@@ -100,13 +100,13 @@ func (t ToggleRecord) Description() string {
 	return "Toggles Record, ex recording -> stop off, no recording -> start it"
 }
 
-func (t ToggleRecord) Run(p ObsProvider, _ *zap.Logger) error {
+func (t ToggleRecord) Run(p ObsProvider, log *zap.Logger) error {
 	obsClient, err := p.Provide()
 	if err != nil {
-		return err
+		return logErr(log, "p.Provide", err)
 	}
 	_, err = obsClient.Record.ToggleRecord()
-	return err
+	return logErr(log, "obsClient.Record.ToggleRecord", err)
 }
 
 /*----------------------------- Pause/Resume/Toggle PauseRecord --------------*/
@@ -126,13 +126,13 @@ func (p PauseRecord) Description() string {
 	return "Pauses current recording, no-op if obs is not recording now"
 }
 
-func (p PauseRecord) Run(pr ObsProvider, _ *zap.Logger) error {
+func (p PauseRecord) Run(pr ObsProvider, log *zap.Logger) error {
 	obsClient, err := pr.Provide()
 	if err != nil {
-		return err
+		return logErr(log, "p.Provide", err)
 	}
 	_, err = obsClient.Record.PauseRecord()
-	return err
+	return logErr(log, "obsClient.Record.PauseRecord", err)
 }
 
 type ResumeRecord struct {
@@ -146,13 +146,13 @@ func (r ResumeRecord) Description() string {
 	return "Resumes Record"
 }
 
-func (r ResumeRecord) Run(pr ObsProvider, _ *zap.Logger) error {
+func (r ResumeRecord) Run(pr ObsProvider, log *zap.Logger) error {
 	obsClient, err := pr.Provide()
 	if err != nil {
-		return err
+		return logErr(log, "p.Provide", err)
 	}
 	_, err = obsClient.Record.ResumeRecord()
-	return err
+	return logErr(log, "obsClient.Record.ResumeRecord", err)
 }
 
 type ToggleRecordPause struct {
@@ -166,11 +166,11 @@ func (t ToggleRecordPause) Description() string {
 	return "Toggles RecordPause"
 }
 
-func (t ToggleRecordPause) Run(pr ObsProvider, _ *zap.Logger) error {
+func (t ToggleRecordPause) Run(pr ObsProvider, log *zap.Logger) error {
 	obsClient, err := pr.Provide()
 	if err != nil {
-		return err
+		return logErr(log, "p.Provide", err)
 	}
 	_, err = obsClient.Record.ToggleRecordPause()
-	return err
+	return logErr(log, "obsClient.Record.ToggleRecordPause", err)
 }
