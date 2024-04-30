@@ -13,25 +13,25 @@ import (
 
 func ProvideSourceCommands(obsManager ObsProvider, l *zap.Logger) []func(ex.Executor) {
 	return []func(ex.Executor){
-		hubman.WithCommand(SetInputMute{}, func(_ core.SerializedCommand, cp ex.CommandParser) {
+		hubman.WithCommand(SetInputMute{}, func(_ core.SerializedCommand, cp ex.CommandParser) error {
 			cmd := SetInputMute{}
 			cp(&cmd)
-			cmd.Run(obsManager, l.Named(cmd.Code()))
+			return cmd.Run(obsManager, l.Named(cmd.Code()))
 		}),
-		hubman.WithCommand(ToggleInputMute{}, func(_ core.SerializedCommand, cp ex.CommandParser) {
+		hubman.WithCommand(ToggleInputMute{}, func(_ core.SerializedCommand, cp ex.CommandParser) error {
 			cmd := ToggleInputMute{}
 			cp(&cmd)
-			cmd.Run(obsManager, l.Named(cmd.Code()))
+			return cmd.Run(obsManager, l.Named(cmd.Code()))
 		}),
-		hubman.WithCommand(ToggleSceneItemEnabled{}, func(_ core.SerializedCommand, cp ex.CommandParser) {
+		hubman.WithCommand(ToggleSceneItemEnabled{}, func(_ core.SerializedCommand, cp ex.CommandParser) error {
 			cmd := ToggleSceneItemEnabled{}
 			cp(&cmd)
-			cmd.Run(obsManager, l.Named(cmd.Code()))
+			return cmd.Run(obsManager, l.Named(cmd.Code()))
 		}),
-		hubman.WithCommand(ToggleCurrentSceneItemEnabled{}, func(_ core.SerializedCommand, cp ex.CommandParser) {
+		hubman.WithCommand(ToggleCurrentSceneItemEnabled{}, func(_ core.SerializedCommand, cp ex.CommandParser) error {
 			cmd := ToggleCurrentSceneItemEnabled{}
 			cp(&cmd)
-			cmd.Run(obsManager, l.Named(cmd.Code()))
+			return cmd.Run(obsManager, l.Named(cmd.Code()))
 		}),
 	}
 }
