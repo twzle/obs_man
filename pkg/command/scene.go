@@ -12,25 +12,25 @@ import (
 
 func ProvideSceneCommands(obsManager ObsProvider, l *zap.Logger) []func(ex.Executor) {
 	return []func(ex.Executor){
-		hubman.WithCommand(SetCurrentPreviewScene{}, func(_ core.SerializedCommand, cp ex.CommandParser) {
+		hubman.WithCommand(SetCurrentPreviewScene{}, func(_ core.SerializedCommand, cp ex.CommandParser) error {
 			cmd := SetCurrentPreviewScene{}
 			cp(&cmd)
-			cmd.Run(obsManager, l.Named(cmd.Code()))
+			return cmd.Run(obsManager, l.Named(cmd.Code()))
 		}),
-		hubman.WithCommand(SetCurrentProgramScene{}, func(_ core.SerializedCommand, cp ex.CommandParser) {
+		hubman.WithCommand(SetCurrentProgramScene{}, func(_ core.SerializedCommand, cp ex.CommandParser) error {
 			cmd := SetCurrentProgramScene{}
 			cp(&cmd)
-			cmd.Run(obsManager, l.Named(cmd.Code()))
+			return cmd.Run(obsManager, l.Named(cmd.Code()))
 		}),
-		hubman.WithCommand(SetCurrentPreviewSceneById{}, func(_ core.SerializedCommand, cp ex.CommandParser) {
+		hubman.WithCommand(SetCurrentPreviewSceneById{}, func(_ core.SerializedCommand, cp ex.CommandParser) error {
 			cmd := SetCurrentPreviewSceneById{}
 			cp(&cmd)
-			cmd.Run(obsManager, l.Named(cmd.Code()))
+			return cmd.Run(obsManager, l.Named(cmd.Code()))
 		}),
-		hubman.WithCommand(SetCurrentProgramSceneById{}, func(_ core.SerializedCommand, cp ex.CommandParser) {
+		hubman.WithCommand(SetCurrentProgramSceneById{}, func(_ core.SerializedCommand, cp ex.CommandParser) error {
 			cmd := SetCurrentProgramSceneById{}
 			cp(&cmd)
-			cmd.Run(obsManager, l.Named(cmd.Code()))
+			return cmd.Run(obsManager, l.Named(cmd.Code()))
 		}),
 	}
 }

@@ -9,36 +9,36 @@ import (
 
 func ProvideRecordCommands(obsProvider ObsProvider, l *zap.Logger) []func(ex.Executor) {
 	return []func(ex.Executor){
-		hubman.WithCommand(StartRecord{}, func(command core.SerializedCommand, cp ex.CommandParser) {
+		hubman.WithCommand(StartRecord{}, func(command core.SerializedCommand, cp ex.CommandParser) error {
 			cmd := StartRecord{}
 			cp(&cmd)
-			cmd.Run(obsProvider, l.Named(cmd.Code()))
+			return cmd.Run(obsProvider, l.Named(cmd.Code()))
 		}),
-		hubman.WithCommand(StopRecord{}, func(command core.SerializedCommand, cp ex.CommandParser) {
+		hubman.WithCommand(StopRecord{}, func(command core.SerializedCommand, cp ex.CommandParser) error {
 			cmd := StopRecord{}
 			cp(&cmd)
-			cmd.Run(obsProvider, l.Named(cmd.Code()))
+			return cmd.Run(obsProvider, l.Named(cmd.Code()))
 		}),
-		hubman.WithCommand(ToggleRecord{}, func(command core.SerializedCommand, cp ex.CommandParser) {
+		hubman.WithCommand(ToggleRecord{}, func(command core.SerializedCommand, cp ex.CommandParser) error {
 			cmd := ToggleRecord{}
 			cp(&cmd)
-			cmd.Run(obsProvider, l.Named(cmd.Code()))
+			return cmd.Run(obsProvider, l.Named(cmd.Code()))
 		}),
 
-		hubman.WithCommand(PauseRecord{}, func(command core.SerializedCommand, cp ex.CommandParser) {
+		hubman.WithCommand(PauseRecord{}, func(command core.SerializedCommand, cp ex.CommandParser) error {
 			cmd := PauseRecord{}
 			cp(&cmd)
-			cmd.Run(obsProvider, l.Named(cmd.Code()))
+			return cmd.Run(obsProvider, l.Named(cmd.Code()))
 		}),
-		hubman.WithCommand(ResumeRecord{}, func(command core.SerializedCommand, cp ex.CommandParser) {
+		hubman.WithCommand(ResumeRecord{}, func(command core.SerializedCommand, cp ex.CommandParser) error {
 			cmd := ResumeRecord{}
 			cp(&cmd)
-			cmd.Run(obsProvider, l.Named(cmd.Code()))
+			return cmd.Run(obsProvider, l.Named(cmd.Code()))
 		}),
-		hubman.WithCommand(ToggleRecordPause{}, func(command core.SerializedCommand, cp ex.CommandParser) {
+		hubman.WithCommand(ToggleRecordPause{}, func(command core.SerializedCommand, cp ex.CommandParser) error {
 			cmd := ToggleRecordPause{}
 			cp(&cmd)
-			cmd.Run(obsProvider, l.Named(cmd.Code()))
+			return cmd.Run(obsProvider, l.Named(cmd.Code()))
 		}),
 	}
 }

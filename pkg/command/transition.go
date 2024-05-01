@@ -12,25 +12,25 @@ import (
 
 func ProvideTransitionCommands(obsManager ObsProvider, l *zap.Logger) []func(ex.Executor) {
 	return []func(ex.Executor){
-		hubman.WithCommand(TriggerStudioModeTransition{}, func(_ core.SerializedCommand, cp ex.CommandParser) {
+		hubman.WithCommand(TriggerStudioModeTransition{}, func(_ core.SerializedCommand, cp ex.CommandParser) error {
 			cmd := TriggerStudioModeTransition{}
 			cp(&cmd)
-			cmd.Run(obsManager, l.Named(cmd.Code()))
+			return cmd.Run(obsManager, l.Named(cmd.Code()))
 		}),
-		hubman.WithCommand(SetCurrentSceneTransition{}, func(_ core.SerializedCommand, cp ex.CommandParser) {
+		hubman.WithCommand(SetCurrentSceneTransition{}, func(_ core.SerializedCommand, cp ex.CommandParser) error {
 			cmd := SetCurrentSceneTransition{}
 			cp(&cmd)
-			cmd.Run(obsManager, l.Named(cmd.Code()))
+			return cmd.Run(obsManager, l.Named(cmd.Code()))
 		}),
-		hubman.WithCommand(TriggerStudioModeTransitionWithName{}, func(_ core.SerializedCommand, cp ex.CommandParser) {
+		hubman.WithCommand(TriggerStudioModeTransitionWithName{}, func(_ core.SerializedCommand, cp ex.CommandParser) error {
 			cmd := TriggerStudioModeTransitionWithName{}
 			cp(&cmd)
-			cmd.Run(obsManager, l.Named(cmd.Code()))
+			return cmd.Run(obsManager, l.Named(cmd.Code()))
 		}),
-		hubman.WithCommand(SetTBarPosition{}, func(_ core.SerializedCommand, cp ex.CommandParser) {
+		hubman.WithCommand(SetTBarPosition{}, func(_ core.SerializedCommand, cp ex.CommandParser) error {
 			cmd := SetTBarPosition{}
 			cp(&cmd)
-			cmd.Run(obsManager, l.Named(cmd.Code()))
+			return cmd.Run(obsManager, l.Named(cmd.Code()))
 		}),
 	}
 }

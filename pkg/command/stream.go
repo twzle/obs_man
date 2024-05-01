@@ -10,25 +10,25 @@ import (
 
 func ProvideStreamCommands(obsManager ObsProvider, l *zap.Logger) []func(ex.Executor) {
 	return []func(ex.Executor){
-		hubman.WithCommand(ToggleStream{}, func(_ core.SerializedCommand, cp ex.CommandParser) {
+		hubman.WithCommand(ToggleStream{}, func(_ core.SerializedCommand, cp ex.CommandParser) error {
 			cmd := ToggleStream{}
 			cp(&cmd)
-			cmd.Run(obsManager, l.Named(cmd.Code()))
+			return cmd.Run(obsManager, l.Named(cmd.Code()))
 		}),
-		hubman.WithCommand(StartStream{}, func(_ core.SerializedCommand, cp ex.CommandParser) {
+		hubman.WithCommand(StartStream{}, func(_ core.SerializedCommand, cp ex.CommandParser) error {
 			cmd := StartStream{}
 			cp(&cmd)
-			cmd.Run(obsManager, l.Named(cmd.Code()))
+			return cmd.Run(obsManager, l.Named(cmd.Code()))
 		}),
-		hubman.WithCommand(StopStream{}, func(_ core.SerializedCommand, cp ex.CommandParser) {
+		hubman.WithCommand(StopStream{}, func(_ core.SerializedCommand, cp ex.CommandParser) error {
 			cmd := StopStream{}
 			cp(&cmd)
-			cmd.Run(obsManager, l.Named(cmd.Code()))
+			return cmd.Run(obsManager, l.Named(cmd.Code()))
 		}),
-		hubman.WithCommand(SendStreamCaption{}, func(_ core.SerializedCommand, cp ex.CommandParser) {
+		hubman.WithCommand(SendStreamCaption{}, func(_ core.SerializedCommand, cp ex.CommandParser) error {
 			cmd := SendStreamCaption{}
 			cp(&cmd)
-			cmd.Run(obsManager, l.Named(cmd.Code()))
+			return cmd.Run(obsManager, l.Named(cmd.Code()))
 		}),
 	}
 }

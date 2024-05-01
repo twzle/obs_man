@@ -9,20 +9,20 @@ import (
 
 func ProvideVirtualCameraCommands(obsManager ObsProvider, l *zap.Logger) []func(ex.Executor) {
 	return []func(ex.Executor){
-		hubman.WithCommand(ToggleVirtualCam{}, func(_ core.SerializedCommand, cp ex.CommandParser) {
+		hubman.WithCommand(ToggleVirtualCam{}, func(_ core.SerializedCommand, cp ex.CommandParser) error {
 			cmd := ToggleVirtualCam{}
 			cp(&cmd)
-			cmd.Run(obsManager, l.Named(cmd.Code()))
+			return cmd.Run(obsManager, l.Named(cmd.Code()))
 		}),
-		hubman.WithCommand(StopVirtualCam{}, func(_ core.SerializedCommand, cp ex.CommandParser) {
+		hubman.WithCommand(StopVirtualCam{}, func(_ core.SerializedCommand, cp ex.CommandParser) error {
 			cmd := StopVirtualCam{}
 			cp(&cmd)
-			cmd.Run(obsManager, l.Named(cmd.Code()))
+			return cmd.Run(obsManager, l.Named(cmd.Code()))
 		}),
-		hubman.WithCommand(StartVirtualCam{}, func(_ core.SerializedCommand, cp ex.CommandParser) {
+		hubman.WithCommand(StartVirtualCam{}, func(_ core.SerializedCommand, cp ex.CommandParser) error {
 			cmd := StartVirtualCam{}
 			cp(&cmd)
-			cmd.Run(obsManager, l.Named(cmd.Code()))
+			return cmd.Run(obsManager, l.Named(cmd.Code()))
 		}),
 	}
 }

@@ -10,10 +10,10 @@ import (
 
 func ProvideUiCommands(obsProvider ObsProvider, l *zap.Logger) []func(ex.Executor) {
 	return []func(ex.Executor){
-		hubman.WithCommand(SetStudioModeEnabled{}, func(_ core.SerializedCommand, cp ex.CommandParser) {
+		hubman.WithCommand(SetStudioModeEnabled{}, func(_ core.SerializedCommand, cp ex.CommandParser) error {
 			cmd := SetStudioModeEnabled{}
 			cp(&cmd)
-			cmd.Run(obsProvider, l.Named(cmd.Code()))
+			return cmd.Run(obsProvider, l.Named(cmd.Code()))
 		}),
 	}
 }
