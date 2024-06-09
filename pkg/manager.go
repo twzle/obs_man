@@ -23,6 +23,7 @@ var (
 	obsDisconnectedCheckLabel                 = "OBS_DISCONNECTED"
 )
 
+// Function handles connection to WebSocket server of OBS
 func connectObs(hostPort, password string) (*goobs.Client, error) {
 	return goobs.New(
 		hostPort,
@@ -32,6 +33,7 @@ func connectObs(hostPort, password string) (*goobs.Client, error) {
 	)
 }
 
+// Represenation of connection manager entity
 type manager struct {
 	conf   ObsConf
 	logger *zap.Logger
@@ -45,6 +47,7 @@ type manager struct {
 	checkManager core.CheckRegistry
 }
 
+// Function with logic of listening events in OBS
 func (m *manager) listenEvents() {
 	for {
 		select {

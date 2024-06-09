@@ -10,6 +10,7 @@ import (
 	"go.uber.org/zap"
 )
 
+// Fucntion providing handlers for command to manage scene switch process with OBS
 func ProvideSceneCommands(obsManager ObsProvider, l *zap.Logger) []func(ex.Executor) {
 	return []func(ex.Executor){
 		hubman.WithCommand(SetCurrentPreviewScene{}, func(_ core.SerializedCommand, cp ex.CommandParser) error {
@@ -42,10 +43,12 @@ var _ RunnableCommand = &SetCurrentPreviewScene{}
 var _ RunnableCommand = &SetCurrentProgramSceneById{}
 var _ RunnableCommand = &SetCurrentPreviewSceneById{}
 
+// Representation of set current program scene command
 type SetCurrentProgramScene struct {
 	ProgramSceneName string `hubman:"program_scene_name"`
 }
 
+// Function provides handler to execute command in OBS
 func (s SetCurrentProgramScene) Run(p ObsProvider, l *zap.Logger) error {
 	obsClient, err := p.Provide()
 	if err != nil {
@@ -61,18 +64,22 @@ func (s SetCurrentProgramScene) Run(p ObsProvider, l *zap.Logger) error {
 	return err
 }
 
+// Function returns string code of command
 func (s SetCurrentProgramScene) Code() string {
 	return "SetCurrentProgramScene"
 }
 
+// Function returns string description of command
 func (s SetCurrentProgramScene) Description() string {
 	return "Sets current Program Scene"
 }
 
+// Representation of set current preview scene command
 type SetCurrentPreviewScene struct {
 	PreviewSceneName string `hubman:"preview_scene_name"`
 }
 
+// Function provides handler to execute command in OBS
 func (s SetCurrentPreviewScene) Run(p ObsProvider, l *zap.Logger) error {
 	obsClient, err := p.Provide()
 	if err != nil {
@@ -88,18 +95,22 @@ func (s SetCurrentPreviewScene) Run(p ObsProvider, l *zap.Logger) error {
 	return err
 }
 
+// Function returns string code of command
 func (s SetCurrentPreviewScene) Code() string {
 	return "SetCurrentPreviewScene"
 }
 
+// Function returns string description of command
 func (s SetCurrentPreviewScene) Description() string {
 	return "Sets current Preview Scene"
 }
 
+// Representation of set current program scene by id command
 type SetCurrentProgramSceneById struct {
 	ProgramSceneId int `hubman:"program_scene_id"`
 }
 
+// Function provides handler to execute command in OBS
 func (s SetCurrentProgramSceneById) Run(p ObsProvider, l *zap.Logger) error {
 	obsClient, err := p.Provide()
 	if err != nil {
@@ -126,18 +137,22 @@ func (s SetCurrentProgramSceneById) Run(p ObsProvider, l *zap.Logger) error {
 	return err
 }
 
+// Function returns string code of command
 func (s SetCurrentProgramSceneById) Code() string {
 	return "SetCurrentProgramSceneById"
 }
 
+// Function returns string description of command
 func (s SetCurrentProgramSceneById) Description() string {
 	return "Sets current Program Scene by id"
 }
 
+// Representation of set current preview scene by id command
 type SetCurrentPreviewSceneById struct {
 	PreviewSceneId int `hubman:"preview_scene_id"`
 }
 
+// Function provides handler to execute command in OBS
 func (s SetCurrentPreviewSceneById) Run(p ObsProvider, l *zap.Logger) error {
 	obsClient, err := p.Provide()
 	if err != nil {
@@ -164,10 +179,12 @@ func (s SetCurrentPreviewSceneById) Run(p ObsProvider, l *zap.Logger) error {
 	return err
 }
 
+// Function returns string code of command
 func (s SetCurrentPreviewSceneById) Code() string {
 	return "SetCurrentPreviewSceneById"
 }
 
+// Function returns string description of command
 func (s SetCurrentPreviewSceneById) Description() string {
 	return "Sets current Preview Scene by id"
 }

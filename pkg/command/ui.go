@@ -8,6 +8,7 @@ import (
 	"go.uber.org/zap"
 )
 
+// Fucntion providing handlers for command to manage ui with OBS
 func ProvideUiCommands(obsProvider ObsProvider, l *zap.Logger) []func(ex.Executor) {
 	return []func(ex.Executor){
 		hubman.WithCommand(SetStudioModeEnabled{}, func(_ core.SerializedCommand, cp ex.CommandParser) error {
@@ -18,10 +19,12 @@ func ProvideUiCommands(obsProvider ObsProvider, l *zap.Logger) []func(ex.Executo
 	}
 }
 
+// Representation of set studio mode enabled command
 type SetStudioModeEnabled struct {
 	UseStudioMode bool `hubman:"use_studio_mode"`
 }
 
+// Function provides handler to execute command in OBS
 func (s SetStudioModeEnabled) Run(p ObsProvider, log *zap.Logger) error {
 	obsClient, err := p.Provide()
 	if err != nil {
@@ -33,10 +36,12 @@ func (s SetStudioModeEnabled) Run(p ObsProvider, log *zap.Logger) error {
 	return logErr(log, "obsClient.Ui.SetStudioModeEnabled", err)
 }
 
+// Function returns string description of command
 func (s SetStudioModeEnabled) Description() string {
 	return "Enables or disables studio mode with given property"
 }
 
+// Function returns string code of command
 func (s SetStudioModeEnabled) Code() string {
 	return "SetStudioModeEnabled"
 }
