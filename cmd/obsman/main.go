@@ -15,6 +15,11 @@ import (
 	"go.uber.org/zap"
 )
 
+/* 
+Application entry point. 
+Initializes application with configuration data.
+Ends with termination of process.
+*/
 func main() {
 	systemConfig := &hcore.SystemConfig{}
 	userConfig := &obsman.Conf{}
